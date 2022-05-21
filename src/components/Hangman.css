@@ -1,0 +1,8 @@
+body, #root {
+  background-color: #6a7595;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 80vh;
+  overflow: hidden;
+}

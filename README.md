@@ -11,6 +11,15 @@
 3. A video recording of the game being played.
 4. Project report.
 
+## Installation
+
+1. Check that you have the following: 
+- Node.js versions: ^12.22.0 || ^14.17.0 || >=16.0.0 (Check with `node -v`)
+- Yarn (`npm install -g yarn`)
+  
+2. Install dependencies: `yarn install`
+3. Start react project: `yarn start`
+
 ------------------------------------------------
 
 # Getting Started with Create React App
