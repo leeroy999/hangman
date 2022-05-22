@@ -14,4 +14,4 @@ export const Guess = {
 }
 
 Object.freeze(Game);
-Object.freeze
+Object.freeze(Guess);
