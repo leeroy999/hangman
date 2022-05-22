@@ -1,14 +1,13 @@
-import { createContext, useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
+import { useEffect, useState } from 'react';
 import { Game, Guess } from './constants';
 import dict from './dictionary';
 import './Hangman.css';
 import HangmanInput from './HangmanInput';
+import { HangmanState } from '../interfaces/HangmanInterface';
+import HangmanContext from './HangmanContext';
 
-export const GameContext = createContext({});
-
-const Hangman = () => {
-  const [state, setState] = useState({
+const Hangman = (): JSX.Element => {
+  const [state, setState]: [HangmanState, (state: any) => void] = useState({
     gameState: Game.NEWGAME,
     gameHistory: [], // { word: string, status: (Game.WIN || Game.LOSE)}
     wins: 0,
@@ -20,12 +19,13 @@ const Hangman = () => {
     letterCount: 0,
     lives: 6,
   });
-  let dictionary = shuffleFisherYates(dict);
+
+  let dictionary: string[] = shuffleFisherYates(dict);
   const [index, setIndex] = useState(0);
 
   // When component mounts:
   useEffect(() => {
-    const newState = JSON.parse(localStorage.getItem("hangman"));
+    const newState: HangmanState = JSON.parse(localStorage.getItem("hangman") ?? "");
     if (newState) {
       setState(newState);
     }
@@ -46,7 +46,7 @@ const Hangman = () => {
 
   // Local functions
   const newGame = () => {
-    const word = dictionary[index];
+    const word: string = dictionary[index];
     setIndex(index + 1);
     if (index >= dictionary.length) {
       setIndex(0);
@@ -56,14 +56,14 @@ const Hangman = () => {
       ...state,
       word: word,
       currentWord: word.split(''),
-      currentGuess: Array(word.length),
+      currentGuess: Array(word.length).fill(""),
       gameState: Game.PLAYING,
       usedLetters: {},
       letterCount: 0,
     });
   };
 
-  const winGame = (word) => {
+  const winGame = (word: string) => {
     const gameHistory = [...state.gameHistory];
     gameHistory.push({word: word, status: Game.WIN});
     setState({
@@ -74,7 +74,7 @@ const Hangman = () => {
     })
   };
 
-  const loseGame = (word) => {
+  const loseGame = (word: string) => {
     const gameHistory = [...state.gameHistory];
     gameHistory.push({word: word, status: Game.WIN});
     setState({
@@ -85,17 +85,25 @@ const Hangman = () => {
     })
   };
 
-  const guess = (str) => {
+  const guess = (str: string): string => {
     if (str in state.usedLetters) {
       return Guess.sameLetter;
     } else if (str.length === 1) {
       if (state.currentWord.includes(str)) {
         let count = 0;
-        const newCurrentGuess = state.currentGuess.map((letter, index) => (
-          state.currentWord[index] === str ? (count++ && str) : letter
-        ))
+        const newCurrentGuess = state.currentGuess.map((letter, index) => {
+          console.log(index);
+          if (state.currentWord[index] === str) {
+            count++;
+            return str;
+          } else {
+            return letter;
+          }
+        });
+        console.log(state.currentGuess);
+        console.log(newCurrentGuess)
         setState({...state, 
-          currentGuesss: newCurrentGuess, 
+          currentGuess: newCurrentGuess, 
           letterCount: state.letterCount + count,
           usedLetters: {...state.usedLetters, [str]: true}
         });
@@ -106,7 +114,7 @@ const Hangman = () => {
       }
     } else {
       if (str.length === state.word.length && str == state.word) {
-        const newUsedLetters = {}
+        const newUsedLetters: {[key: string]: boolean} = {}
         state.currentWord.forEach(letter => newUsedLetters[letter] = true); 
         setState({...state,
           currentGuess: state.currentWord,
@@ -121,20 +129,15 @@ const Hangman = () => {
     }
   };
 
-  // create context
-  const context = {...state, guess: guess, newGame: newGame};
-  const GameContext = createContext(context);
   return (
-    <>
-      <GameContext.Provider value={context}>
-        <HangmanInput/>
-      </GameContext.Provider>
-    </>
+    <HangmanContext.Provider value={{...state, guess: guess, newGame: newGame}}>
+        <HangmanInput />
+    </HangmanContext.Provider>
 
   );
 };
 
-const shuffleFisherYates = (array) => {
+const shuffleFisherYates = (array: string[]): string[] => {
   let i = array.length;
   while (i--) {
     const rand = Math.floor(Math.random() * i);
