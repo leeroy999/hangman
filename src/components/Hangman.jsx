@@ -3,11 +3,10 @@ import { Game, Guess } from './constants';
 import dict from './dictionary';
 import './Hangman.css';
 import HangmanInput from './HangmanInput';
-import { HangmanState } from '../interfaces/HangmanInterface';
 import HangmanContext from './HangmanContext';
 
-const Hangman = (): JSX.Element => {
-  const [state, setState]: [HangmanState, (state: any) => void] = useState({
+const Hangman = ()=> {
+  const [state, setState] = useState({
     gameState: Game.NEWGAME,
     gameHistory: [], // { word: string, status: (Game.WIN || Game.LOSE)}
     wins: 0,
@@ -20,12 +19,12 @@ const Hangman = (): JSX.Element => {
     lives: 6,
   });
 
-  let dictionary: string[] = shuffleFisherYates(dict);
+  let dictionary = shuffleFisherYates(dict);
   const [index, setIndex] = useState(0);
 
   // When component mounts:
   useEffect(() => {
-    const newState: HangmanState = JSON.parse(localStorage.getItem("hangman") ?? "");
+    const newState = JSON.parse(localStorage.getItem("hangman") ?? "");
     if (newState) {
       setState(newState);
     }
@@ -46,7 +45,7 @@ const Hangman = (): JSX.Element => {
 
   // Local functions
   const newGame = () => {
-    const word: string = dictionary[index];
+    const word = dictionary[index];
     setIndex(index + 1);
     if (index >= dictionary.length) {
       setIndex(0);
@@ -63,7 +62,7 @@ const Hangman = (): JSX.Element => {
     });
   };
 
-  const winGame = (word: string) => {
+  const winGame = (word) => {
     const gameHistory = [...state.gameHistory];
     gameHistory.push({word: word, status: Game.WIN});
     setState({
@@ -74,7 +73,7 @@ const Hangman = (): JSX.Element => {
     })
   };
 
-  const loseGame = (word: string) => {
+  const loseGame = (word) => {
     const gameHistory = [...state.gameHistory];
     gameHistory.push({word: word, status: Game.WIN});
     setState({
@@ -85,7 +84,7 @@ const Hangman = (): JSX.Element => {
     })
   };
 
-  const guess = (str: string): string => {
+  const guess = (str) => {
     if (str in state.usedLetters) {
       return Guess.sameLetter;
     } else if (str.length === 1) {
@@ -114,7 +113,7 @@ const Hangman = (): JSX.Element => {
       }
     } else {
       if (str.length === state.word.length && str == state.word) {
-        const newUsedLetters: {[key: string]: boolean} = {}
+        const newUsedLetters = {}
         state.currentWord.forEach(letter => newUsedLetters[letter] = true); 
         setState({...state,
           currentGuess: state.currentWord,
@@ -137,7 +136,7 @@ const Hangman = (): JSX.Element => {
   );
 };
 
-const shuffleFisherYates = (array: string[]): string[] => {
+const shuffleFisherYates = (array)=> {
   let i = array.length;
   while (i--) {
     const rand = Math.floor(Math.random() * i);

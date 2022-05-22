@@ -1,8 +1,7 @@
 import { createContext } from "react";
 import { Game } from "./constants";
-import { HangmanContextState } from "../interfaces/HangmanInterface";
 
-const state: HangmanContextState = {
+const state = {
   gameState: Game.NEWGAME,
   gameHistory: [], // { word: string, status: (Game.WIN || Game.LOSE)}
   wins: 0,
@@ -13,7 +12,7 @@ const state: HangmanContextState = {
   usedLetters: {}, // {'a': true} --> 'a' is a used letter
   letterCount: 0,
   lives: 6,
-  guess: (word: string) => {},
+  guess: (word) => {},
   newGame: () => {},
 };
 

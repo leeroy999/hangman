@@ -5,7 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import Hangman from './components/Hangman';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root')
 );
 root.render(
   <React.StrictMode>

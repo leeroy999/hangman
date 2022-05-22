@@ -1,6 +1,6 @@
 import Input from '@mui/material/Input';
 import { useContext, useState } from "react"
-import HangmanContext from './HangmanContext';
+import HangmanContext from './HangmanContext.jsx';
 
 const HangmanInput = () => {
   const [state, setState] = useState("");
