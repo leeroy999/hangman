@@ -16,9 +16,10 @@
 1. Check that you have the following: 
 - Node.js versions: ^12.22.0 || ^14.17.0 || >=16.0.0 (Check with `node -v`)
 - Yarn (`npm install -g yarn`)
-  
-2. Install dependencies: `yarn install`
-3. Start react project: `yarn start`
+
+2. Go into the git repository: `cd hangman`
+3. Install dependencies: `yarn install`
+4. Start react project: `yarn start`
 
 ------------------------------------------------
 
