@@ -25,14 +25,10 @@ const Hangman = ()=> {
   // When component mounts
   useEffect(() => {
     if (state.word === "") {
-      console.log("new");
-      console.log(localStorage.getItem("hangman"));
-      const newState = JSON.parse(localStorage.getItem("hangman") || '[]');
-      console.log(newState && newState.word !== "");
+      const newState = JSON.parse(localStorage.getItem("hangman")) || '[]';
       if (newState && newState.word !== "") {
         setState(newState);
       } else {
-        console.log("nonewstate");
         newGame();
       }
     }
@@ -41,19 +37,16 @@ const Hangman = ()=> {
   // When component updates after letter guessed:
   useEffect(() => {
     if (state.gameState > Game.NEWGAME && state.word === "") {
-      console.log("update")
       newGame();
     }
 
     if (state.word !== "") {
-      console.log("save");
       localStorage.setItem("hangman", JSON.stringify(state));
     }
   });
 
   // Local functions
   const newGame = () => {
-    console.log("newgame")
     const word = dictionary[index];
     setIndex(index + 1);
     if (index >= dictionary.length) {
@@ -71,7 +64,6 @@ const Hangman = ()=> {
   };
 
   const winGame = (word) => {
-    console.log("win")
     const gameHistory = [...state.gameHistory];
     gameHistory.push({word: word, status: Game.WIN});
     setState({
@@ -85,7 +77,6 @@ const Hangman = ()=> {
   };
 
   const loseGame = (word) => {
-    console.log("lose")
     const gameHistory = [...state.gameHistory];
     gameHistory.push({word: word, status: Game.LOSE});
     setState({
@@ -118,7 +109,6 @@ const Hangman = ()=> {
   // param: str (word or letter)
   // returns: Guess.ENUM
   const guess = (str) => {
-    console.log(state.word);
     if (state.gameState !== Game.PLAYING) {
       setState({...state, gameState: Game.PLAYING});
     }
@@ -194,5 +184,9 @@ const shuffleFisherYates = (array)=> {
   }
   return array;
 };
+
+const storageCheck = (storage) => {
+  return typeof storage === 'object' && storage.correctWord && storage.currentGuess;
+}
 
 export default Hangman;
