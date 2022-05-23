@@ -11,7 +11,7 @@ export const Guess = {
   correctLetter: "Correct Letter",
   incorrectWord: "Incorrect word!",
   correctWord: "Correct word!",
-}
+};
 
 Object.freeze(Game);
 Object.freeze(Guess);

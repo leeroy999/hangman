@@ -5,6 +5,7 @@ import "./Hangman.css";
 import HangmanInput from "./HangmanInput";
 import HangmanContext from "./HangmanContext";
 import HangmanAnimation from "./HangmanAnimation";
+import HangmanScoreboard from "./HangmanScoreboard";
 
 const Hangman = () => {
   const [state, setState] = useState({
@@ -135,6 +136,7 @@ const Hangman = () => {
       value={{ ...state, guess: guess, newGame: newGame }}
     >
       <HangmanInput />
+      <HangmanScoreboard />
       <HangmanAnimation />
     </HangmanContext.Provider>
   );
