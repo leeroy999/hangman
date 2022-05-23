@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Game, Guess } from './constants';
-import dict from './dictionary';
-import './Hangman.css';
-import HangmanInput from './HangmanInput';
-import HangmanContext from './HangmanContext';
+import { useEffect, useState } from "react";
+import { Game, Guess } from "./constants";
+import dict from "./dictionary";
+import "./Hangman.css";
+import HangmanInput from "./HangmanInput";
+import HangmanContext from "./HangmanContext";
+import HangmanAnimation from "./HangmanAnimation";
 
-const Hangman = ()=> {
+const Hangman = () => {
   const [state, setState] = useState({
     gameState: Game.NEWGAME,
     gameHistory: [], // { word: string, status: (Game.WIN || Game.LOSE)}
@@ -24,14 +25,16 @@ const Hangman = ()=> {
 
   // When component mounts:
   useEffect(() => {
-    const newState = JSON.parse(localStorage.getItem("hangman") ?? "");
+    // If get a game halfway, then should continue
+    const newState = JSON.parse(localStorage.getItem("hangman") ?? "") ?? {};
     if (newState) {
       setState(newState);
     }
+    // Otherwise start new game
     if (state.gameState === Game.NEWGAME) {
       newGame();
     }
-  }, [])
+  }, []);
 
   // When component updates after letter guessed:
   useEffect(() => {
@@ -41,7 +44,7 @@ const Hangman = ()=> {
       loseGame(state.word);
     }
     localStorage.setItem("hangman", JSON.stringify(state));
-  }, [state.lives, state.letterCount, state.usedLetters, state.gameState])
+  }, [state.lives, state.letterCount, state.usedLetters, state.gameState]);
 
   // Local functions
   const newGame = () => {
@@ -54,7 +57,7 @@ const Hangman = ()=> {
     setState({
       ...state,
       word: word,
-      currentWord: word.split(''),
+      currentWord: word.split(""),
       currentGuess: Array(word.length).fill(""),
       gameState: Game.PLAYING,
       usedLetters: {},
@@ -64,24 +67,24 @@ const Hangman = ()=> {
 
   const winGame = (word) => {
     const gameHistory = [...state.gameHistory];
-    gameHistory.push({word: word, status: Game.WIN});
+    gameHistory.push({ word: word, status: Game.WIN });
     setState({
       ...state,
       gameState: Game.WIN,
       wins: state.wins + 1,
       gameHistory: gameHistory,
-    })
+    });
   };
 
   const loseGame = (word) => {
     const gameHistory = [...state.gameHistory];
-    gameHistory.push({word: word, status: Game.WIN});
+    gameHistory.push({ word: word, status: Game.WIN });
     setState({
       ...state,
       gameState: Game.LOSE,
       loses: state.loses + 1,
       gameHistory: gameHistory,
-    })
+    });
   };
 
   const guess = (str) => {
@@ -91,7 +94,6 @@ const Hangman = ()=> {
       if (state.currentWord.includes(str)) {
         let count = 0;
         const newCurrentGuess = state.currentGuess.map((letter, index) => {
-          console.log(index);
           if (state.currentWord[index] === str) {
             count++;
             return str;
@@ -99,44 +101,46 @@ const Hangman = ()=> {
             return letter;
           }
         });
-        console.log(state.currentGuess);
-        console.log(newCurrentGuess)
-        setState({...state, 
-          currentGuess: newCurrentGuess, 
+        setState({
+          ...state,
+          currentGuess: newCurrentGuess,
           letterCount: state.letterCount + count,
-          usedLetters: {...state.usedLetters, [str]: true}
+          usedLetters: { ...state.usedLetters, [str]: true },
         });
         return Guess.correctLetter;
       } else {
-        setState({...state, lives: state.lives - 1});
+        setState({ ...state, lives: state.lives - 1 });
         return Guess.incorrectLetter;
       }
     } else {
       if (str.length === state.word.length && str == state.word) {
-        const newUsedLetters = {}
-        state.currentWord.forEach(letter => newUsedLetters[letter] = true); 
-        setState({...state,
+        const newUsedLetters = {};
+        state.currentWord.forEach((letter) => (newUsedLetters[letter] = true));
+        setState({
+          ...state,
           currentGuess: state.currentWord,
           usedLetters: newUsedLetters,
           letterCount: str.length,
         });
         return Guess.correctWord;
       } else {
-        setState({...state, lives: state.lives - 1});
+        setState({ ...state, lives: state.lives - 1 });
         return Guess.incorrectWord;
       }
     }
   };
 
   return (
-    <HangmanContext.Provider value={{...state, guess: guess, newGame: newGame}}>
-        <HangmanInput />
+    <HangmanContext.Provider
+      value={{ ...state, guess: guess, newGame: newGame }}
+    >
+      <HangmanInput />
+      <HangmanAnimation />
     </HangmanContext.Provider>
-
   );
 };
 
-const shuffleFisherYates = (array)=> {
+const shuffleFisherYates = (array) => {
   let i = array.length;
   while (i--) {
     const rand = Math.floor(Math.random() * i);
