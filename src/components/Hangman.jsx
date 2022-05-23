@@ -24,7 +24,7 @@ const Hangman = ()=> {
 
   // When component mounts:
   useEffect(() => {
-    const newState = JSON.parse(localStorage.getItem("hangman") ?? "") ?? {};
+    const newState = localStorage.getItem("hangman") ? JSON.parse(localStorage.getItem("hangman")) : {};
     if (newState) {
       setState(newState);
     }
