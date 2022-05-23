@@ -7,13 +7,14 @@ const state = {
   wins: 0,
   loses: 0,
   word: "",
-  currentWord: [],
+  correctWord: [],
   currentGuess: [],
   usedLetters: {}, // {'a': true} --> 'a' is a used letter
   letterCount: 0,
   lives: 6,
   guess: (word) => {},
   newGame: () => {},
+  clear: () => {},
 };
 
 const HangmanContext = createContext(state);

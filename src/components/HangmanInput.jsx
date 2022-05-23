@@ -10,7 +10,7 @@ const HangmanInput = () => {
   return (
     <>
       <Input 
-        placeholder={"Enter word/letter"} 
+        placeholder={"Enter letter"} 
         autoFocus
         onChange={e => {
           setState(e.target.value);
@@ -27,12 +27,11 @@ const HangmanInput = () => {
         {label}
       </span>
       <div>
-        {context.currentGuess.reduce((prev, curr) => {
+        {context.currentGuess ? context.currentGuess.reduce((prev, curr) => {
             return (curr) ? prev + " " + curr : prev + ' _';
-          }, "").trim()}
+          }, "").trim() : ""}
       </div>
     </>
-
   );
 }
 
