@@ -15,6 +15,7 @@ const state = {
   guess: (word) => {},
   newGame: () => {},
   clear: () => {},
+  setState: (state) => {}
 };
 
 const HangmanContext = createContext(state);

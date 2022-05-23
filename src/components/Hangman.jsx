@@ -175,7 +175,12 @@ const Hangman = ()=> {
   }
 
   return (
-    <HangmanContext.Provider value={{...state, guess: guess, newGame: newGame, clear: clearGame}}>
+    <HangmanContext.Provider value={{
+      ...state,
+      guess: guess,
+      newGame: newGame,
+      clear: clearGame,
+      setState: setState}}>
         <HangmanInput />
     </HangmanContext.Provider>
   );
