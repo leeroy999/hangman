@@ -190,8 +190,15 @@ const Hangman = () => {
       newGame: newGame,
       clear: clearGame,
       setState: setState}}>
-        <HangmanInput />
-        <HangmanAnimation />
+
+        <div class="flex-container"> 
+          <div class="flex-item-left"> <HangmanAnimation /> </div> 
+      
+          <div class="flex-item-center"> <HangmanInput /> </div>
+
+          <div class="flex-item-right"> Scoreboard </div>
+        </div>
+
     </HangmanContext.Provider>
   );
 };
