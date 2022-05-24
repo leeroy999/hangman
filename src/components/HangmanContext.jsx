@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import { Game } from "./constants";
 
-const state = {
+export const state = {
   gameState: Game.NEWGAME,
   gameHistory: [], // { word: string, status: (Game.WIN || Game.LOSE)}
   wins: 0,

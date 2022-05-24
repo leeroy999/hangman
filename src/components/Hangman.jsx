@@ -25,8 +25,9 @@ const Hangman = ()=> {
   // When component mounts
   useEffect(() => {
     if (state.word === "") {
-      const newState = JSON.parse(localStorage.getItem("hangman")) || '[]';
-      if (newState && newState.word !== "" && 'correctWord' in newState) {
+      const newState = JSON.parse(localStorage.getItem('hangman') || '[]') ;
+      console.log(storageCheck(newState));
+      if (newState && newState.word !== "" && storageCheck(newState)) {
         setState(newState);
       } else {
         newGame();
@@ -164,6 +165,18 @@ const Hangman = ()=> {
     }
   }
 
+  const storageCheck = (storage) => {
+    const keys = Object.keys(state);
+    const storageKeys = Object.keys(storage);
+    let result = true;
+    keys.forEach((val) => {
+      if (!storageKeys.includes(val)) {
+        result = false;
+      }
+    })
+    return result;
+  }
+
   return (
     <HangmanContext.Provider value={{
       ...state,
@@ -184,9 +197,5 @@ const shuffleFisherYates = (array)=> {
   }
   return array;
 };
-
-const storageCheck = (storage) => {
-  return typeof storage === 'object' && storage.correctWord && storage.currentGuess;
-}
 
 export default Hangman;
