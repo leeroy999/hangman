@@ -1,6 +1,8 @@
 body,
 #root {
-  background-color: #ffffff;
+  background-image: url("../assets/background.PNG");
+  background-repeat: no-repeat;
+  background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import zero from "../assets/0.jpg";
-import one from "../assets/1.jpg";
-import two from "../assets/2.jpg";
-import three from "../assets/3.jpg";
-import four from "../assets/4.jpg";
-import five from "../assets/5.jpg";
-import six from "../assets/6.jpg";
+import zero from "../assets/0.PNG";
+import one from "../assets/1.PNG";
+import two from "../assets/2.PNG";
+import three from "../assets/3.PNG";
+import four from "../assets/4.PNG";
+import five from "../assets/5.PNG";
+import six from "../assets/6.PNG";
 import HangmanContext from "./HangmanContext";
 
 const HangmanAnimation = () => {
