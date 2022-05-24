@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Game, Guess } from './constants';
-import dict from './dictionary';
-import './Hangman.css';
-import HangmanInput from './HangmanInput';
-import HangmanContext from './HangmanContext';
+import { useEffect, useState } from "react";
+import { Game, Guess } from "./constants";
+import dict from "./dictionary";
+import "./Hangman.css";
+import HangmanInput from "./HangmanInput";
+import HangmanContext from "./HangmanContext";
+import HangmanAnimation from "./HangmanAnimation";
 
-const Hangman = ()=> {
+const Hangman = () => {
   const [state, setState] = useState({
     gameState: Game.NEWGAME,
     gameHistory: [], // [{ word: string, status: (Game.WIN || Game.LOSE)}, ]
@@ -65,7 +66,7 @@ const Hangman = ()=> {
 
   const winGame = (word) => {
     const gameHistory = [...state.gameHistory];
-    gameHistory.push({word: word, status: Game.WIN});
+    gameHistory.push({ word: word, status: Game.WIN });
     setState({
       ...state,
       gameState: Game.WIN,
@@ -73,12 +74,12 @@ const Hangman = ()=> {
       gameHistory: gameHistory,
       lives: 6,
       word: "",
-    })
+    });
   };
 
   const loseGame = (word) => {
     const gameHistory = [...state.gameHistory];
-    gameHistory.push({word: word, status: Game.LOSE});
+    gameHistory.push({ word: word, status: Game.WIN });
     setState({
       ...state,
       gameState: Game.LOSE,
@@ -86,7 +87,7 @@ const Hangman = ()=> {
       gameHistory: gameHistory,
       lives: 6,
       word: "",
-    })
+    });
   };
 
   // Used to clear history (local storage cache)
@@ -190,7 +191,7 @@ const Hangman = ()=> {
   );
 };
 
-const shuffleFisherYates = (array)=> {
+const shuffleFisherYates = (array) => {
   let i = array.length;
   while (i--) {
     const rand = Math.floor(Math.random() * i);
