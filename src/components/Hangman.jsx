@@ -111,14 +111,18 @@ const Hangman = () => {
   // param: str (word or letter)
   // returns: Guess.ENUM
   const guess = (str) => {
+    str = str.toLowerCase();
     if (state.gameState !== Game.PLAYING) {
       setState({...state, gameState: Game.PLAYING});
     }
     let result = "";
-    if (str in state.usedLetters && state.gamestate === Game.PLAYING) {
+    if (str in state.usedLetters && state.gameState === Game.PLAYING) {
+      // same letter used
       result = Guess.sameLetter;
     } else if (str.length <= 0) {
       result = Guess.empty;
+    } else if (!str.match(/[a-z]/i)) {
+      result = Guess.notAlpha;
     } else if (str.length === 1) {
       result = checkCharacter(str);
     } else {
@@ -187,6 +191,7 @@ const Hangman = () => {
       clear: clearGame,
       setState: setState}}>
         <HangmanInput />
+        <HangmanAnimation />
     </HangmanContext.Provider>
   );
 };

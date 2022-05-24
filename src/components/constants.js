@@ -11,6 +11,7 @@ export const Guess = {
   correctLetter: "Correct Letter",
   empty: "Must contain character",
   word: "Only one character allowed",
+  notAlpha: "Not an alphabet!",
   lose: "You Lost",
   win: "You Won",
 }
