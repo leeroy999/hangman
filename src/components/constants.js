@@ -9,8 +9,11 @@ export const Guess = {
   sameLetter: "Same letter guessed!",
   incorrectLetter: "Incorrect letter!",
   correctLetter: "Correct Letter",
-  incorrectWord: "Incorrect word!",
-  correctWord: "Correct word!",
+  empty: "Must contain character",
+  word: "Only one character allowed",
+  notAlpha: "Not an alphabet!",
+  lose: "You Lost",
+  win: "You Won",
 }
 
 Object.freeze(Game);
