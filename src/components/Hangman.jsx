@@ -4,6 +4,7 @@ import dict from './dictionary';
 import './Hangman.css';
 import HangmanInput from './HangmanInput';
 import HangmanContext from './HangmanContext';
+import HangmanAnimation from "./HangmanAnimation";
 
 const Hangman = ()=> {
   const [state, setState] = useState({
@@ -129,10 +130,10 @@ const Hangman = ()=> {
   };
 
   return (
-    <HangmanContext.Provider value={{...state, guess: guess, newGame: newGame}}>
+      <HangmanContext.Provider value={{...state, guess: guess, newGame: newGame}}>
         <HangmanInput />
+        <HangmanAnimation />
     </HangmanContext.Provider>
-
   );
 };
 
