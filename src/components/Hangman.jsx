@@ -15,7 +15,7 @@ const Hangman = ()=> {
     correctWord: [],
     currentGuess: [],
     usedLetters: {}, // {'a': true} --> 'a' is a used letter
-    letterCount: 0, // number of letters in usedLetters
+    letterCount: 0, // number of letters guessed correctly
     lives: 6,
   });
 
@@ -89,6 +89,7 @@ const Hangman = ()=> {
     })
   };
 
+  // Used to clear history (local storage cache)
   const clearGame = () => {
     const clearedData = {
       gameState: Game.PLAYING,
@@ -164,6 +165,7 @@ const Hangman = ()=> {
     }
   }
 
+  // Checks if storage has keys given in state variable
   const storageCheck = (storage) => {
     const keys = Object.keys(state);
     const storageKeys = Object.keys(storage);
