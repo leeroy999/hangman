@@ -1,5 +1,11 @@
+<<<<<<< Updated upstream
 body, #root {
   background-color: #ECDFCA;
+=======
+body,
+#root {
+  background-image: url(./assets/background.PNG);
+>>>>>>> Stashed changes
   display: flex;
   flex-direction: column;
   align-items: center;
