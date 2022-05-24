@@ -26,7 +26,6 @@ const Hangman = ()=> {
   useEffect(() => {
     if (state.word === "") {
       const newState = JSON.parse(localStorage.getItem('hangman') || '[]') ;
-      console.log(storageCheck(newState));
       if (newState && newState.word !== "" && storageCheck(newState)) {
         setState(newState);
       } else {
