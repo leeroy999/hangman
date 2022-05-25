@@ -5,6 +5,7 @@ import "./Hangman.css";
 import HangmanInput from "./HangmanInput";
 import HangmanContext from "./HangmanContext";
 import HangmanAnimation from "./HangmanAnimation";
+import HangmanScoreboard from "./HangmanScoreboard";
 
 const Hangman = () => {
   const [state, setState] = useState({
@@ -195,9 +196,9 @@ const Hangman = () => {
         <div class="flex-container"> 
           <div class="flex-item-left"> <HangmanAnimation /> </div> 
       
-          <div class="flex-item-center"> <HangmanInput /> </div>
+          <div class="flex-item-center"> <HangmanInput /><NewGameButton /> </div>
 
-          <div class="flex-item-right"> <NewGameButton /> </div>
+          <div class="flex-item-right"><HangmanScoreboard /></div>
         </div>
     </HangmanContext.Provider>
   );
