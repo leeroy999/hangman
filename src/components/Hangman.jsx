@@ -185,18 +185,20 @@ const Hangman = () => {
   };
 
   return (
-    <HangmanContext.Provider
-      value={{
-        ...state,
-        guess: guess,
-        newGame: newGame,
-        clear: clearGame,
-        setState: setState,
-      }}
-    >
-      <HangmanInput />
-      <HangmanAnimation />
-      <NewGameButton />
+    <HangmanContext.Provider value={{
+      ...state,
+      guess: guess,
+      newGame: newGame,
+      clear: clearGame,
+      setState: setState}}>
+
+        <div class="flex-container"> 
+          <div class="flex-item-left"> <HangmanAnimation /> </div> 
+      
+          <div class="flex-item-center"> <HangmanInput /> </div>
+
+          <div class="flex-item-right"> <NewGameButton /> </div>
+        </div>
     </HangmanContext.Provider>
   );
 };
