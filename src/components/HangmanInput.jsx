@@ -24,7 +24,7 @@ const HangmanInput = () => {
         }}
       />
       <span>
-        {label}
+        {context.newGameState ? "" : label}
       </span>
       <div>
         {context.currentGuess ? context.currentGuess.reduce((prev, curr) => {

@@ -19,6 +19,7 @@ const Hangman = () => {
     usedLetters: {}, // {'a': true} --> 'a' is a used letter
     letterCount: 0, // number of letters guessed correctly
     lives: 6,
+    newGameState: false,
   });
 
   let dictionary = shuffleFisherYates(dict);
@@ -104,6 +105,7 @@ const Hangman = () => {
       usedLetters: {}, // {'a': true} --> 'a' is a used letter
       letterCount: 0, // number of letters guessed correctly
       lives: 6,
+      newGameState: true,
     };
     setState(clearedData);
     localStorage.setItem("hangman", JSON.stringify(clearedData));
@@ -153,6 +155,7 @@ const Hangman = () => {
           letterCount: state.letterCount + count,
           usedLetters: { ...state.usedLetters, [str]: true },
           gameState: Game.PLAYING,
+          newGameState: false,
         });
         return Guess.correctLetter;
       }
@@ -166,6 +169,7 @@ const Hangman = () => {
           lives: state.lives - 1,
           usedLetters: { ...state.usedLetters, [str]: true },
           gameState: Game.PLAYING,
+          newGameState: false,
         });
         return Guess.incorrectLetter;
       }
