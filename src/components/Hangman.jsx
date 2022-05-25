@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Text, useContext } from "react";
 import { Game, Guess } from "./constants";
 import dict from "./dictionary";
 import "./Hangman.css";
@@ -10,42 +10,42 @@ import HangmanScoreboard from "./HangmanScoreboard";
 const Hangman = () => {
   const [state, setState] = useState({
     gameState: Game.NEWGAME,
-    gameHistory: [], // { word: string, status: (Game.WIN || Game.LOSE)}
+    gameHistory: [], // [{ word: string, status: (Game.WIN || Game.LOSE)}, ]
     wins: 0,
     loses: 0,
     word: "",
-    currentWord: [],
+    correctWord: [],
     currentGuess: [],
     usedLetters: {}, // {'a': true} --> 'a' is a used letter
-    letterCount: 0,
+    letterCount: 0, // number of letters guessed correctly
     lives: 6,
   });
 
   let dictionary = shuffleFisherYates(dict);
   const [index, setIndex] = useState(0);
 
-  // When component mounts:
+  // When component mounts
   useEffect(() => {
-    // If get a game halfway, then should continue
-    const newState = JSON.parse(localStorage.getItem("hangman") ?? "") ?? {};
-    if (newState) {
-      setState(newState);
-    }
-    // Otherwise start new game
-    if (state.gameState === Game.NEWGAME) {
-      newGame();
+    if (state.word === "") {
+      const newState = JSON.parse(localStorage.getItem("hangman") || "[]");
+      if (newState && newState.word !== "" && storageCheck(newState)) {
+        setState(newState);
+      } else {
+        newGame();
+      }
     }
   }, []);
 
   // When component updates after letter guessed:
   useEffect(() => {
-    if (state.word.length != 0 && state.letterCount === state.word.length) {
-      winGame(state.word);
-    } else if (state.lives === 0) {
-      loseGame(state.word);
+    if (state.gameState > Game.NEWGAME && state.word === "") {
+      newGame();
     }
-    localStorage.setItem("hangman", JSON.stringify(state));
-  }, [state.lives, state.letterCount, state.usedLetters, state.gameState]);
+
+    if (state.word !== "") {
+      localStorage.setItem("hangman", JSON.stringify(state));
+    }
+  });
 
   // Local functions
   const newGame = () => {
@@ -58,9 +58,8 @@ const Hangman = () => {
     setState({
       ...state,
       word: word,
-      currentWord: word.split(""),
+      correctWord: word.split(""),
       currentGuess: Array(word.length).fill(""),
-      gameState: Game.PLAYING,
       usedLetters: {},
       letterCount: 0,
     });
@@ -74,6 +73,8 @@ const Hangman = () => {
       gameState: Game.WIN,
       wins: state.wins + 1,
       gameHistory: gameHistory,
+      lives: 6,
+      word: "",
     });
   };
 
@@ -85,59 +86,120 @@ const Hangman = () => {
       gameState: Game.LOSE,
       loses: state.loses + 1,
       gameHistory: gameHistory,
+      lives: 6,
+      word: "",
     });
   };
 
+  // Used to clear history (local storage cache)
+  const clearGame = () => {
+    const clearedData = {
+      gameState: Game.PLAYING,
+      gameHistory: [], // [{ word: string, status: (Game.WIN || Game.LOSE)}, ]
+      wins: 0,
+      loses: 0,
+      word: "",
+      correctWord: [],
+      currentGuess: [],
+      usedLetters: {}, // {'a': true} --> 'a' is a used letter
+      letterCount: 0, // number of letters guessed correctly
+      lives: 6,
+    };
+    setState(clearedData);
+    localStorage.setItem("hangman", JSON.stringify(clearedData));
+  };
+
+  // param: str (word or letter)
+  // returns: Guess.ENUM
   const guess = (str) => {
-    if (str in state.usedLetters) {
-      return Guess.sameLetter;
+    str = str.toLowerCase();
+    if (state.gameState !== Game.PLAYING) {
+      setState({ ...state, gameState: Game.PLAYING });
+    }
+    let result = "";
+    if (str in state.usedLetters && state.gameState === Game.PLAYING) {
+      // same letter used
+      result = Guess.sameLetter;
+    } else if (str.length <= 0) {
+      result = Guess.empty;
+    } else if (!str.match(/[a-z]/i)) {
+      result = Guess.notAlpha;
     } else if (str.length === 1) {
-      if (state.currentWord.includes(str)) {
-        let count = 0;
-        const newCurrentGuess = state.currentGuess.map((letter, index) => {
-          if (state.currentWord[index] === str) {
-            count++;
-            return str;
-          } else {
-            return letter;
-          }
-        });
+      result = checkCharacter(str);
+    } else {
+      result = Guess.word;
+    }
+    return result;
+  };
+
+  const checkCharacter = (str) => {
+    if (state.correctWord.includes(str)) {
+      let count = 0;
+      const newCurrentGuess = state.currentGuess.map((letter, index) => {
+        if (state.correctWord[index] === str) {
+          count++;
+          return str;
+        } else {
+          return letter;
+        }
+      });
+      if (state.letterCount + count >= state.word.length) {
+        winGame(state.word);
+        return Guess.win;
+      } else {
         setState({
           ...state,
           currentGuess: newCurrentGuess,
           letterCount: state.letterCount + count,
           usedLetters: { ...state.usedLetters, [str]: true },
+          gameState: Game.PLAYING,
         });
         return Guess.correctLetter;
-      } else {
-        setState({ ...state, lives: state.lives - 1 });
-        return Guess.incorrectLetter;
       }
     } else {
-      if (str.length === state.word.length && str == state.word) {
-        const newUsedLetters = {};
-        state.currentWord.forEach((letter) => (newUsedLetters[letter] = true));
+      if (state.lives - 1 <= 0) {
+        loseGame(state.word);
+        return Guess.lose;
+      } else {
         setState({
           ...state,
-          currentGuess: state.currentWord,
-          usedLetters: newUsedLetters,
-          letterCount: str.length,
+          lives: state.lives - 1,
+          usedLetters: { ...state.usedLetters, [str]: true },
+          gameState: Game.PLAYING,
         });
-        return Guess.correctWord;
-      } else {
-        setState({ ...state, lives: state.lives - 1 });
-        return Guess.incorrectWord;
+        return Guess.incorrectLetter;
       }
     }
   };
 
+  // Checks if storage has keys given in state variable
+  const storageCheck = (storage) => {
+    const keys = Object.keys(state);
+    const storageKeys = Object.keys(storage);
+    let result = true;
+    keys.forEach((val) => {
+      if (!storageKeys.includes(val)) {
+        result = false;
+      }
+    });
+    return result;
+  };
+
   return (
-    <HangmanContext.Provider
-      value={{ ...state, guess: guess, newGame: newGame }}
-    >
-      <HangmanInput />
-      <HangmanScoreboard />
-      <HangmanAnimation />
+    <HangmanContext.Provider value={{
+      ...state,
+      guess: guess,
+      newGame: newGame,
+      clear: clearGame,
+      setState: setState}}>
+
+        <div class="flex-container"> 
+          <div class="flex-item-left"> <HangmanAnimation /> </div> 
+      
+          <div class="flex-item-center"> <HangmanInput /><NewGameButton /> </div>
+
+          <div class="flex-item-right"><HangmanScoreboard /></div>
+        </div>
     </HangmanContext.Provider>
   );
 };
@@ -151,4 +213,16 @@ const shuffleFisherYates = (array) => {
   return array;
 };
 
+const NewGameButton = () => {
+  const { clear } = useContext(HangmanContext);
+  const handleClick = () => {
+    clear();
+  };
+
+  return (
+    <div>
+      <button onClick={handleClick}>New game</button>
+    </div>
+  );
+};
 export default Hangman;

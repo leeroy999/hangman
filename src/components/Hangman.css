@@ -1,9 +1,38 @@
 body,
 #root {
-  background-color: #ffffff;
+  background-image: url("../assets/background.PNG");
+  background-repeat: repeat;
+  background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 80vh;
   overflow: hidden;
+}
+
+img {max-width:100%;}
+
+body {
+  margin: 0;
+}
+
+.flex-container {
+display: flex;
+flex-direction: row;
+font-size: 30px;
+text-align: center;
+height: 100vh;
+justify-content: center;
+}
+
+.flex-item-left {
+flex: 2;
+}
+
+.flex-item-center {
+flex: 3;
+}
+
+.flex-item-right {
+flex: 2;
 }
