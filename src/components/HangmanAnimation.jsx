@@ -40,7 +40,7 @@ const HangmanAnimation = () => {
 
   return (
     <>
-      <img src={state} />
+      <img src={state} style={{ width: 200, height: 200 }} />
     </>
   );
 };

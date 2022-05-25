@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Text, useContext } from "react";
 import { Game, Guess } from "./constants";
 import dict from "./dictionary";
 import "./Hangman.css";
@@ -26,7 +26,7 @@ const Hangman = () => {
   // When component mounts
   useEffect(() => {
     if (state.word === "") {
-      const newState = JSON.parse(localStorage.getItem('hangman') || '[]') ;
+      const newState = JSON.parse(localStorage.getItem("hangman") || "[]");
       if (newState && newState.word !== "" && storageCheck(newState)) {
         setState(newState);
       } else {
@@ -57,7 +57,7 @@ const Hangman = () => {
     setState({
       ...state,
       word: word,
-      correctWord: word.split(''),
+      correctWord: word.split(""),
       currentGuess: Array(word.length).fill(""),
       usedLetters: {},
       letterCount: 0,
@@ -106,14 +106,14 @@ const Hangman = () => {
     };
     setState(clearedData);
     localStorage.setItem("hangman", JSON.stringify(clearedData));
-  }
+  };
 
   // param: str (word or letter)
   // returns: Guess.ENUM
   const guess = (str) => {
     str = str.toLowerCase();
     if (state.gameState !== Game.PLAYING) {
-      setState({...state, gameState: Game.PLAYING});
+      setState({ ...state, gameState: Game.PLAYING });
     }
     let result = "";
     if (str in state.usedLetters && state.gameState === Game.PLAYING) {
@@ -146,10 +146,11 @@ const Hangman = () => {
         winGame(state.word);
         return Guess.win;
       } else {
-        setState({...state, 
-          currentGuess: newCurrentGuess, 
+        setState({
+          ...state,
+          currentGuess: newCurrentGuess,
           letterCount: state.letterCount + count,
-          usedLetters: {...state.usedLetters, [str]: true},
+          usedLetters: { ...state.usedLetters, [str]: true },
           gameState: Game.PLAYING,
         });
         return Guess.correctLetter;
@@ -162,13 +163,13 @@ const Hangman = () => {
         setState({
           ...state,
           lives: state.lives - 1,
-          usedLetters: {...state.usedLetters, [str]: true},
-          gameState: Game.PLAYING
+          usedLetters: { ...state.usedLetters, [str]: true },
+          gameState: Game.PLAYING,
         });
         return Guess.incorrectLetter;
       }
     }
-  }
+  };
 
   // Checks if storage has keys given in state variable
   const storageCheck = (storage) => {
@@ -179,19 +180,23 @@ const Hangman = () => {
       if (!storageKeys.includes(val)) {
         result = false;
       }
-    })
+    });
     return result;
-  }
+  };
 
   return (
-    <HangmanContext.Provider value={{
-      ...state,
-      guess: guess,
-      newGame: newGame,
-      clear: clearGame,
-      setState: setState}}>
-        <HangmanInput />
-        <HangmanAnimation />
+    <HangmanContext.Provider
+      value={{
+        ...state,
+        guess: guess,
+        newGame: newGame,
+        clear: clearGame,
+        setState: setState,
+      }}
+    >
+      <HangmanInput />
+      <HangmanAnimation />
+      <NewGameButton />
     </HangmanContext.Provider>
   );
 };
@@ -205,4 +210,16 @@ const shuffleFisherYates = (array) => {
   return array;
 };
 
+const NewGameButton = () => {
+  const { clear } = useContext(HangmanContext);
+  const handleClick = () => {
+    clear();
+  };
+
+  return (
+    <div>
+      <button onClick={handleClick}>New game</button>
+    </div>
+  );
+};
 export default Hangman;
