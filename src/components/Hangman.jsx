@@ -62,6 +62,8 @@ const Hangman = () => {
       currentGuess: Array(word.length).fill(""),
       usedLetters: {},
       letterCount: 0,
+      lives: 6,
+      newGameState: true,
     });
   };
 
