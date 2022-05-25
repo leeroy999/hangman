@@ -5,6 +5,7 @@ import "./Hangman.css";
 import HangmanInput from "./HangmanInput";
 import HangmanContext from "./HangmanContext";
 import HangmanAnimation from "./HangmanAnimation";
+import { Button, Modal, Box, Typography } from "@mui/material";
 
 const Hangman = () => {
   const [state, setState] = useState({
@@ -196,7 +197,8 @@ const Hangman = () => {
     >
       <HangmanInput />
       <HangmanAnimation />
-      <NewGameButton />
+      <NewGame />
+      <ClearHistoryButton />
     </HangmanContext.Provider>
   );
 };
@@ -210,16 +212,70 @@ const shuffleFisherYates = (array) => {
   return array;
 };
 
-const NewGameButton = () => {
+const boxStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
+
+const ClearHistoryButton = () => {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const { clear } = useContext(HangmanContext);
   const handleClick = () => {
     clear();
+    handleClose();
   };
 
   return (
     <div>
-      <button onClick={handleClick}>New game</button>
+      <Button variant="outlined" onClick={handleOpen}>
+        Clear History
+      </Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <Box sx={boxStyle}>
+          <div>
+            <h3> This will clear all history</h3>
+            <p> Are you sure? </p>
+          </div>
+          <Button text-align="center" variant="contained" onClick={handleClick}>
+            Yes
+          </Button>
+          <Button text-align="center" variant="contained" onClick={handleClose}>
+            No
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 };
+
+const NewGame = () => {
+  const { newGame } = useContext(HangmanContext);
+  const handleClick = () => {
+    newGame();
+  };
+
+  return (
+    <div>
+      <Button variant="outlined" onClick={handleClick}>
+        NewGame
+      </Button>
+    </div>
+  );
+};
+
 export default Hangman;
