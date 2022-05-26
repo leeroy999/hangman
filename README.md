@@ -14,7 +14,7 @@
 ## Installation
 
 1. Check that you have the following: 
-- Node.js versions: ^12.22.0 || ^14.17.0 || >=16.0.0 (Check with `node -v`)
+- Node.js versions: ^12.22.0 || ^14.17.0 || >=16.0.0 (Check with `node -v` and `npm -v`)
 - Yarn (`npm install -g yarn`)
 
 2. Go into the git repository: `cd hangman`
