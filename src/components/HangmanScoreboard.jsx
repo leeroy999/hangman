@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import { green, red } from "@mui/material/colors";
 import { useContext, useEffect, useState } from "react";
 import { Game } from "./constants";
@@ -10,22 +11,21 @@ const HangmanScoreboard = () => {
   //const [state, setState] = useState([{ word: "string", status: Game.LOSE }]);
 
   useEffect(() => {
-    console.log("status change");
     setState(context.gameHistory);
   });
 
   // Example: context.gameHistory[1].status
   return (
-    <div>
-      {state.map((x) => {
+    <Box>
+      {state.map((x, i) => {
         if (x.status === Game.WIN) {
-          return <text style={{ color: "green" }}>correct</text>;
+          return <Box key={i} sx={{ textAlign: 'center', color: green[300] }}>{x.word}</Box>;
         }
         if (x.status === Game.LOSE) {
-          return <text style={{ color: "red" }}>wrong</text>;
+          return <Box key={i} sx={{ textAlign: 'center', color: red[300] }}>{x.word}</Box>;
         }
       })}
-    </div>
+    </Box>
   );
 };
 

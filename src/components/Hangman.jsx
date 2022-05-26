@@ -6,6 +6,7 @@ import HangmanInput from "./HangmanInput";
 import HangmanContext from "./HangmanContext";
 import HangmanAnimation from "./HangmanAnimation";
 import HangmanScoreboard from "./HangmanScoreboard";
+import { Box, Button } from "@mui/material";
 
 const Hangman = () => {
   const [state, setState] = useState({
@@ -74,29 +75,38 @@ const Hangman = () => {
       gameState: Game.WIN,
       wins: state.wins + 1,
       gameHistory: gameHistory,
-      lives: 6,
       word: "",
     });
   };
 
   const loseGame = (word) => {
     const gameHistory = [...state.gameHistory];
-    gameHistory.push({ word: word, status: Game.WIN });
+    gameHistory.push({ word: word, status: Game.LOSE });
     setState({
       ...state,
       gameState: Game.LOSE,
+      lives: state.lives - 1,
       loses: state.loses + 1,
       gameHistory: gameHistory,
-      lives: 6,
       word: "",
     });
   };
 
+  const clearHistory = () => {
+    const clearedHistory = {
+      ...state,
+      gameHistory: [],
+      newGameState: true,
+    };
+    setState(clearedHistory);
+    localStorage.setItem("hangman", JSON.stringify(clearedHistory));
+  }
+
   // Used to clear history (local storage cache)
-  const clearGame = () => {
+  const clearGame = (isHistoryCleared) => {
     const clearedData = {
       gameState: Game.PLAYING,
-      gameHistory: [], // [{ word: string, status: (Game.WIN || Game.LOSE)}, ]
+      gameHistory: state.gameHistory,
       wins: 0,
       loses: 0,
       word: "",
@@ -115,9 +125,6 @@ const Hangman = () => {
   // returns: Guess.ENUM
   const guess = (str) => {
     str = str.toLowerCase();
-    if (state.gameState !== Game.PLAYING) {
-      setState({ ...state, gameState: Game.PLAYING });
-    }
     let result = "";
     if (str in state.usedLetters && state.gameState === Game.PLAYING) {
       // same letter used
@@ -145,12 +152,13 @@ const Hangman = () => {
           return letter;
         }
       });
-      if (state.letterCount + count >= state.word.length) {
+      if (state.letterCount + count >= state.word.length && state.gameState === Game.PLAYING) {
         winGame(state.word);
         return Guess.win;
       } else {
         setState({
           ...state,
+          lives: state.gameState > Game.PLAYING ? 6 : state.lives,
           currentGuess: newCurrentGuess,
           letterCount: state.letterCount + count,
           usedLetters: { ...state.usedLetters, [str]: true },
@@ -160,13 +168,13 @@ const Hangman = () => {
         return Guess.correctLetter;
       }
     } else {
-      if (state.lives - 1 <= 0) {
+      if (state.lives - 1 <= 0 && state.gameState === Game.PLAYING) {
         loseGame(state.word);
         return Guess.lose;
       } else {
         setState({
           ...state,
-          lives: state.lives - 1,
+          lives: state.gameState > Game.PLAYING ? 5 : state.lives - 1,
           usedLetters: { ...state.usedLetters, [str]: true },
           gameState: Game.PLAYING,
           newGameState: false,
@@ -193,17 +201,17 @@ const Hangman = () => {
     <HangmanContext.Provider value={{
       ...state,
       guess: guess,
-      newGame: newGame,
-      clear: clearGame,
+      newGame: clearGame,
+      clear: clearHistory,
       setState: setState}}>
 
-        <div class="flex-container"> 
-          <div class="flex-item-left"> <HangmanAnimation /> </div> 
+        <Box className="flex-container"> 
+          <Box className="flex-item-left"> <HangmanAnimation /> </Box> 
       
-          <div class="flex-item-center"> <HangmanInput /><NewGameButton /> </div>
+          <Box className="flex-item-center"> <HangmanInput /><NewGameButton /> </Box>
 
-          <div class="flex-item-right"><HangmanScoreboard /></div>
-        </div>
+          <Box className="flex-item-right"><HangmanScoreboard /></Box>
+        </Box>
     </HangmanContext.Provider>
   );
 };
@@ -218,15 +226,19 @@ const shuffleFisherYates = (array) => {
 };
 
 const NewGameButton = () => {
-  const { clear } = useContext(HangmanContext);
+  const { clear, newGame } = useContext(HangmanContext);
   const handleClick = () => {
+    newGame();
+  };
+  const handleClear = () => {
     clear();
   };
 
   return (
-    <div>
-      <button onClick={handleClick}>New game</button>
-    </div>
+    <>
+      <Button variant="contained" onClick={handleClick}>New game</Button>
+      <Button variant="contained" onClick={handleClear}>Clear History</Button>
+    </>
   );
 };
 export default Hangman;

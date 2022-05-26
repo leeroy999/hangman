@@ -13,7 +13,6 @@ const HangmanAnimation = () => {
   const [state, setState] = useState(zero);
 
   useEffect(() => {
-    console.log(context.lives);
     switch (context.lives) {
       case 0:
         setState(six);

@@ -1,5 +1,7 @@
+import { Box, TextField } from '@mui/material';
 import Input from '@mui/material/Input';
 import { useContext, useState } from "react"
+import { Guess } from './constants.js';
 import HangmanContext from './HangmanContext.jsx';
 
 const HangmanInput = () => {
@@ -9,9 +11,13 @@ const HangmanInput = () => {
 
   return (
     <>
-      <Input 
-        placeholder={"Enter letter"} 
-        autoFocus
+      <TextField
+        error={label !== "" && label !== Guess.correctLetter && label !== Guess.win}
+        style={{marginTop: 20}}
+        id="outlined-basic" 
+        label="Enter Letter" 
+        variant="outlined" 
+        autoFocus={true}
         onChange={e => {
           setState(e.target.value);
         }}
@@ -23,14 +29,14 @@ const HangmanInput = () => {
           }
         }}
       />
-      <span>
+      <Box>
         {context.newGameState ? "" : label}
-      </span>
-      <div>
+      </Box>
+      <Box>
         {context.currentGuess ? context.currentGuess.reduce((prev, curr) => {
             return (curr) ? prev + " " + curr : prev + ' _';
           }, "").trim() : ""}
-      </div>
+      </Box>
     </>
   );
 }
