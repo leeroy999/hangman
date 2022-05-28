@@ -72,6 +72,7 @@ const Hangman = () => {
     gameHistory.push({ word: word, status: Game.WIN });
     setState({
       ...state,
+      lives: 6,
       gameState: Game.WIN,
       wins: state.wins + 1,
       gameHistory: gameHistory,
