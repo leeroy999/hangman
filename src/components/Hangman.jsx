@@ -134,11 +134,12 @@ const Hangman = () => {
       result = Guess.empty;
     } else if (!str.match(/[a-z]/i)) {
       result = Guess.notAlpha;
-    } else if (str.length === 1) {
-      result = checkCharacter(str);
-    } else {
+    } else if (str.length !== 1) {
       result = Guess.word;
+    } else {
+      return checkCharacter(str);
     }
+    setState({ ...state, newGameState: false });
     return result;
   };
 
